@@ -4,6 +4,7 @@ import os
 import psutil
 import hashlib
 import time
+import datetime
 
 darkiceConnection = False
 
@@ -46,5 +47,8 @@ def textToFile(text, path):
 def killDarkice(dumpfilePath, dataPath):
     subprocess.call(['killall', 'darkice'])
     if os.path.isfile(dumpfilePath):
-        os.rename(dumpfilePath, dataPath + 'dumpfile.' + str(time.time() * 1000000) + '.ogg')
+        os.rename(dumpfilePath, dataPath + 'dumpfile.' + currentTimeToStr() + '.ogg')
 
+def currentTimeToStr():
+    now = datetime.datetime.now()
+    return str(now.year) + '-' + str(now.month) + '-' + str(now.day) + '-' + str(now.hour) + '-' + str(now.minute) + '-' + str(now.second)
