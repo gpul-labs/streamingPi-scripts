@@ -11,11 +11,17 @@ import os
 STREAMING_URL = 'streaming.cuacfm.org'
 DARKICE_CFG_PATH = '/home/pi/darkice.cfg'
 DATA_PATH = '/home/pi/.StreamingPi/'
+RECORD_PATH = '/home/pi/backup-streaming/dumpfile.ogg'
 
 if not os.path.exists(DATA_PATH):
     os.makedirs(DATA_PATH)
 
 darkicePidPath = DATA_PATH + 'darkice.pid'
+darkiceMd5Path = DATA_PATH + 'darkice.md5'
+
+with open(darkiceMd5Path, 'r') as f:
+    if f.read() != utils.fileMd5(DARKICE_CFG_PATH):
+        subprocess.call(['killall', 'darkice'])
 
 leds = LedHandler()
 
@@ -31,10 +37,10 @@ if not utils.has_soundcard():
 
 if not utils.has_streaming_connection(darkicePidPath):
     subprocess.call(['killall', 'darkice'])
+    utils.textToFile(utils.fileMd5(DARKICE_CFG_PATH), darkiceMd5Path)
     darkiceProcess = subprocess.Popen(['darkice', '-c', DARKICE_CFG_PATH])
     print 'running darkice with pid ' + str(darkiceProcess.pid)
-    with open(darkicePidPath, 'w') as f:
-        f.write('%d' % darkiceProcess.pid)
+    utils.textToFile(darkiceProcess.pid, darkicePidPath)
     time.sleep(2)
 
 if not utils.has_streaming_connection(darkicePidPath):

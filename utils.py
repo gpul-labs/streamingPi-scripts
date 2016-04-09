@@ -2,6 +2,7 @@ import socket
 import subprocess
 import os
 import psutil
+import hashlib
 
 darkiceConnection = False
 
@@ -33,3 +34,10 @@ def has_streaming_connection(darkicePidPath):
 def only_silence():
     # TODO check if the only input is silence
     return False
+
+def fileMd5(full_path):
+    return hashlib.md5(open(full_path, 'rb').read()).hexdigest()
+
+def textToFile(text, path):
+    with open(path, 'w') as f:
+        f.write('%s' % text)
