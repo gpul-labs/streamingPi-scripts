@@ -3,6 +3,7 @@ import subprocess
 import os
 import psutil
 import hashlib
+import time
 
 darkiceConnection = False
 
@@ -41,3 +42,9 @@ def fileMd5(full_path):
 def textToFile(text, path):
     with open(path, 'w') as f:
         f.write('%s' % text)
+
+def killDarkice(dumpfilePath, dataPath):
+    subprocess.call(['killall', 'darkice'])
+    if os.path.isfile(dumpfilePath):
+        os.rename(dumpfilePath, dataPath + 'dumpfile.' + str(time.time() * 1000000) + '.ogg')
+
